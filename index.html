@@ -5,142 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PURAMO GARAGE | SOUND LAB - Keyboard</title>
 <style>
-  :root{
-    --bg:#000;
-    --neon:#00ffcc;
-    --panel:#020404;
-  }
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--neon);
-    font-family: monospace;
-    padding:20px;
-  }
-  h1{font-size:22px;margin:0 0 8px;}
-  .small{opacity:.85;font-size:13px;margin:0 0 14px;}
-  .panel{
-    border:1px solid var(--neon);
-    padding:14px;
-    margin:14px 0;
-    background: rgba(0,0,0,.35);
-  }
-  button{
-    background:transparent;
-    color:var(--neon);
-    border:1px solid var(--neon);
-    padding:8px 12px;
-    cursor:pointer;
-    margin:4px 6px 4px 0;
-  }
-  button:hover{background:var(--neon);color:#000;}
-  .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
-  .readout{
-    font-size:16px;
-    margin-top:10px;
-    line-height:1.7;
-  }
-  .code{
-    margin-top:10px;
-    border:1px solid var(--neon);
-    background:var(--panel);
-    padding:10px;
-    white-space:pre;
-    font-size:14px;
-    overflow:auto;
-  }
+:root{
+  --bg:#000;
+  --neon:#00ffcc;
+  --panel:#020404;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--neon);
+  font-family: monospace;
+  padding:20px;
+}
+h1{font-size:22px;margin:0 0 6px;}
+.small{opacity:.85;font-size:13px;margin:0 0 12px;}
+.panel{
+  border:1px solid var(--neon);
+  padding:14px;
+  margin:14px 0;
+  background: rgba(0,0,0,.35);
+}
+button{
+  background:transparent;
+  color:var(--neon);
+  border:1px solid var(--neon);
+  padding:8px 12px;
+  cursor:pointer;
+  margin-right:6px;
+}
+button:hover{background:var(--neon);color:#000;}
+.readout{
+  font-size:16px;
+  margin-top:8px;
+  line-height:1.6;
+}
+.code{
+  margin-top:8px;
+  border:1px solid var(--neon);
+  background:var(--panel);
+  padding:10px;
+  white-space:pre;
+  font-size:14px;
+}
 
-  /* ===== Keyboard ===== */
-  .keyboard-wrap{
-    width:min(900px, 100%);
-    position:relative;
-    user-select:none;
-    touch-action:none; /* pointer events */
-    margin-top:10px;
-  }
-  .white-keys{
-    display:grid;
-    grid-template-columns: repeat(8, 1fr); /* C4..C5 = 8 white keys */
-    gap:6px;
-  }
-  .white{
-    height:240px;
-    border:1px solid var(--neon);
-    background:#fff;
-    color:#000;
-    border-radius:8px;
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    padding-bottom:8px;
-    font-size:12px;
-    box-sizing:border-box;
-    cursor:pointer;
-  }
-  .white.active{
-    background: #dff;
-    outline:2px solid var(--neon);
-  }
+/* ===== Keyboard ===== */
+.keyboard-wrap{
+  width:min(980px, 100%);
+  position:relative;
+  user-select:none;
+  touch-action:none;
+  margin-top:10px;
+}
+.white-keys{
+  display:grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap:6px;
+}
+.white{
+  height:220px;
+  border:1px solid var(--neon);
+  background:#fff;
+  color:#000;
+  border-radius:8px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding-bottom:8px;
+  font-size:13px;
+  cursor:pointer;
+}
+.white.active{
+  background:#dff;
+  outline:2px solid var(--neon);
+}
+.black-keys{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:150px;
+}
+.black{
+  position:absolute;
+  width:11%;
+  height:150px;
+  background:#111;
+  border:1px solid var(--neon);
+  border-radius:8px;
+  color:var(--neon);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding-bottom:8px;
+  font-size:11px;
+  cursor:pointer;
+}
+.black.active{
+  background:#033;
+  outline:2px solid var(--neon);
+}
 
-  .black-keys{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:160px;
-    pointer-events:none; /* black keys handle their own events */
-  }
-  /* black key positions over gaps between whites:
-     C# over between C and D, D# between D and E, F# between F and G, G# between G and A, A# between A and B
-  */
-  .black{
-    position:absolute;
-    width:11%;
-    height:160px;
-    background:#111;
-    border:1px solid var(--neon);
-    border-radius:8px;
-    color:var(--neon);
-    display:flex;
-    align-items:flex-end;
-    justify-content:center;
-    padding-bottom:8px;
-    font-size:11px;
-    box-sizing:border-box;
-    cursor:pointer;
-    pointer-events:auto;
-  }
-  .black.active{
-    background:#033;
-    outline:2px solid var(--neon);
-  }
-  /* Fine-tuned positions (percent) for 8 whites */
-  .b-cs{ left: 7.5%;  }   /* between white 1 and 2 */
-  .b-ds{ left: 19.5%; }   /* between white 2 and 3 */
-  .b-fs{ left: 43.5%; }   /* between white 4 and 5 */
-  .b-gs{ left: 55.5%; }   /* between white 5 and 6 */
-  .b-as{ left: 67.5%; }   /* between white 6 and 7 */
-
-  .hint{
-    margin-top:10px;
-    opacity:.9;
-    font-size:13px;
-  }
+/* 黒鍵位置（白鍵8枚想定） */
+.b-cs{ left:7.5%; }
+.b-ds{ left:19.5%; }
+.b-fs{ left:43.5%; }
+.b-gs{ left:55.5%; }
+.b-as{ left:67.5%; }
 </style>
 </head>
+
 <body>
 
-<h1>🎹 PURAMO GARAGE – SOUND LAB (Keyboard)</h1>
+<h1>🎹 PURAMO GARAGE – SOUND LAB</h1>
 <p class="small">
-最初に「▶ 音を有効化」を1回クリック → 鍵盤を押す（クリック/タップ長押しで鳴り続ける）
+▶ 音を有効化 を1回クリック → 鍵盤を押す（クリック/タップ長押し）
 </p>
 
 <div class="panel">
-  <div class="row">
-    <button id="unlockBtn">▶ 音を有効化</button>
-    <button id="stopBtn">■ 全停止</button>
-    <button id="copyBtn">COPY tone()</button>
-  </div>
+  <button id="unlockBtn">▶ 音を有効化</button>
+  <button id="stopBtn">■ 全停止</button>
+  <button id="copyBtn">COPY tone()</button>
 
   <div class="readout" id="readout">
     Note: - / Hz: - / half_period: -
@@ -148,208 +132,84 @@
 
   <div class="code" id="codeBox">tone(1908, 300);</div>
 
-  <div class="hint">
-    half_period(us) = 1,000,000 / (Hz × 2)　※PIC実機は -10〜15%補正が目安
-  </div>
-</div>
-
-<div class="panel">
-  <h2 style="margin:0 0 8px;font-size:16px;">鍵盤（C4 → C5）</h2>
-
-  <div class="keyboard-wrap" id="keyboard">
-    <div class="white-keys" id="whiteKeys"></div>
-
-    <div class="black-keys">
-      <div class="black b-cs" data-note="C#4">C#</div>
-      <div class="black b-ds" data-note="D#4">D#</div>
-      <div class="black b-fs" data-note="F#4">F#</div>
-      <div class="black b-gs" data-note="G#4">G#</div>
-      <div class="black b-as" data-note="A#4">A#</div>
-    </div>
-  </div>
-
-  <p class="small" style="margin-top:10px;">
-    白鍵: C D E F G A B C / 黒鍵: C# D# F# G# A#
+  <p class="small">
+    half_period(us) = 1,000,000 / (Hz × 2)（PIC実機は -10〜15%補正が目安）
   </p>
 </div>
 
+<!-- ===== Keyboard C4–C5 ===== -->
+<div class="panel">
+  <h2 style="font-size:16px;margin:0 0 6px;">1オクターブ目（C4–C5）</h2>
+  <div class="keyboard-wrap">
+    <div class="white-keys" id="whiteC4"></div>
+    <div class="black-keys">
+      <div class="black b-cs" data-note="C#4">ド♯</div>
+      <div class="black b-ds" data-note="D#4">レ♯</div>
+      <div class="black b-fs" data-note="F#4">ファ♯</div>
+      <div class="black b-gs" data-note="G#4">ソ♯</div>
+      <div class="black b-as" data-note="A#4">ラ♯</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Keyboard C5–C6 ===== -->
+<div class="panel">
+  <h2 style="font-size:16px;margin:0 0 6px;">2オクターブ目（C5–C6）</h2>
+  <div class="keyboard-wrap">
+    <div class="white-keys" id="whiteC5"></div>
+    <div class="black-keys">
+      <div class="black b-cs" data-note="C#5">ド♯</div>
+      <div class="black b-ds" data-note="D#5">レ♯</div>
+      <div class="black b-fs" data-note="F#5">ファ♯</div>
+      <div class="black b-gs" data-note="G#5">ソ♯</div>
+      <div class="black b-as" data-note="A#5">ラ♯</div>
+    </div>
+  </div>
+</div>
+
 <script>
-/** ===== Web Audio Core ===== */
-let ctx = null;
-let masterGain = null;
+/* ===== Web Audio ===== */
+let ctx=null, masterGain=null;
+const active=new Map();
 
-// いま鳴っているオシレータを管理（押しっぱなし対応）
-const active = new Map(); // keyId -> {osc, gain}
-
-const noteTable = {
-  "C4": 261.6256,
-  "C#4": 277.1826,
-  "D4": 293.6648,
-  "D#4": 311.1270,
-  "E4": 329.6276,
-  "F4": 349.2282,
-  "F#4": 369.9944,
-  "G4": 391.9954,
-  "G#4": 415.3047,
-  "A4": 440.0000,
-  "A#4": 466.1638,
-  "B4": 493.8833,
-  "C5": 523.2511
+const noteHz={
+  C4:261.63,"C#4":277.18,D4:293.66,"D#4":311.13,E4:329.63,
+  F4:349.23,"F#4":369.99,G4:392.00,"G#4":415.30,A4:440.00,"A#4":466.16,B4:493.88,
+  C5:523.25,"C#5":554.37,D5:587.33,"D#5":622.25,E5:659.26,
+  F5:698.46,"F#5":739.99,G5:783.99,"G#5":830.61,A5:880.00,"A#5":932.33,B5:987.77,
+  C6:1046.50
 };
 
-const readout = document.getElementById("readout");
-const codeBox = document.getElementById("codeBox");
-const unlockBtn = document.getElementById("unlockBtn");
-const stopBtn = document.getElementById("stopBtn");
-const copyBtn = document.getElementById("copyBtn");
+const solfege={
+  C:"ド",D:"レ",E:"ミ",F:"ファ",G:"ソ",A:"ラ",B:"シ"
+};
 
-function halfPeriodUs(hz){
-  return Math.round(1000000 / (hz * 2));
-}
+function halfPeriod(hz){return Math.round(1000000/(hz*2));}
 
-function updateUI(note){
-  const hz = noteTable[note];
-  const half = halfPeriodUs(hz);
-  readout.textContent = `Note: ${note} / Hz: ${hz.toFixed(1)} / half_period: ${half} us`;
-  codeBox.textContent = `// ${note} (${hz.toFixed(1)}Hz)\ntone(${half}, 300);`;
-}
+const readout=document.getElementById("readout");
+const codeBox=document.getElementById("codeBox");
 
 async function ensureAudio(){
   if(!ctx){
-    ctx = new (window.AudioContext || window.webkitAudioContext)();
-    masterGain = ctx.createGain();
-    masterGain.gain.value = 0.2; // 音量（大きいと耳が疲れるので控えめ）
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    masterGain=ctx.createGain();
+    masterGain.gain.value=0.25;
     masterGain.connect(ctx.destination);
   }
   await ctx.resume();
 }
 
-function startNote(note, keyId){
-  const hz = noteTable[note];
-  if(!hz) return;
-
-  // すでに鳴ってたら二重起動しない
-  if(active.has(keyId)) return;
-
-  const osc = ctx.createOscillator();
-  osc.type = "square"; // PICっぽい
-  osc.frequency.value = hz;
-
-  const g = ctx.createGain();
-  g.gain.value = 0.0;
-
-  // 矩形波のクリックを少しだけ抑える（超短いフェード）
-  const now = ctx.currentTime;
-  g.gain.setValueAtTime(0.0, now);
-  g.gain.linearRampToValueAtTime(1.0, now + 0.005);
-
-  osc.connect(g);
-  g.connect(masterGain);
-  osc.start();
-
-  active.set(keyId, {osc, gain:g});
-  updateUI(note);
-}
-
-function stopNote(keyId){
-  const obj = active.get(keyId);
-  if(!obj) return;
-
-  const now = ctx.currentTime;
-  obj.gain.gain.cancelScheduledValues(now);
-  obj.gain.gain.setValueAtTime(obj.gain.gain.value, now);
-  obj.gain.gain.linearRampToValueAtTime(0.0, now + 0.01);
-
-  setTimeout(() => {
-    try{ obj.osc.stop(); }catch(e){}
-    try{ obj.osc.disconnect(); }catch(e){}
-    try{ obj.gain.disconnect(); }catch(e){}
-  }, 20);
-
-  active.delete(keyId);
-}
-
-function stopAll(){
-  for(const keyId of Array.from(active.keys())){
-    stopNote(keyId);
-  }
-}
-
-/** ===== UI: build white keys ===== */
-const whiteOrder = ["C4","D4","E4","F4","G4","A4","B4","C5"];
-const whiteNames = {"C4":"C","D4":"D","E4":"E","F4":"F","G4":"G","A4":"A","B4":"B","C5":"C"};
-const whiteKeys = document.getElementById("whiteKeys");
-
-whiteOrder.forEach((note, i) => {
-  const div = document.createElement("div");
-  div.className = "white";
-  div.dataset.note = note;
-  div.textContent = whiteNames[note];
-  whiteKeys.appendChild(div);
-});
-
-/** ===== Pointer events for both mouse & touch ===== */
-function bindKey(el){
-  const note = el.dataset.note;
-  const keyId = el.classList.contains("black") ? `b-${note}` : `w-${note}`;
-
-  el.addEventListener("pointerdown", async (ev) => {
-    ev.preventDefault();
-    await ensureAudio();
-    startNote(note, keyId);
-    el.classList.add("active");
-    el.setPointerCapture(ev.pointerId);
-  });
-
-  el.addEventListener("pointerup", (ev) => {
-    ev.preventDefault();
-    stopNote(keyId);
-    el.classList.remove("active");
-  });
-
-  el.addEventListener("pointercancel", (ev) => {
-    ev.preventDefault();
-    stopNote(keyId);
-    el.classList.remove("active");
-  });
-
-  el.addEventListener("pointerleave", (ev) => {
-    // 押しっぱなしで外へ出たときも止めたい場合はここで止める
-    // ただし、PointerCapture中はleaveが来ないこともある
-  });
-}
-
-document.querySelectorAll(".white").forEach(bindKey);
-document.querySelectorAll(".black").forEach(bindKey);
-
-/** ===== Buttons ===== */
-unlockBtn.addEventListener("click", async () => {
-  await ensureAudio();
-  // 一瞬だけ無音で起動確認
-  readout.textContent = "Audio: unlocked ✅  鍵盤を押してね";
-});
-
-stopBtn.addEventListener("click", () => {
-  stopAll();
-});
-
-copyBtn.addEventListener("click", async () => {
-  const text = codeBox.textContent;
-  try{
-    await navigator.clipboard.writeText(text);
-    copyBtn.textContent = "COPIED ✅";
-    setTimeout(()=> copyBtn.textContent="COPY tone()", 800);
-  }catch(e){
-    // クリップボードがダメな環境向け
-    alert("コピーできない環境です。コード枠から手動でコピーしてね。");
-  }
-});
-
-// 初期表示
-readout.textContent = "Audio: locked (▶ 音を有効化 をクリック)";
-codeBox.textContent = "tone(1908, 300);";
-</script>
-
-</body>
-</html>
+function startNote(note,key){
+  if(active.has(key)) return;
+  const hz=noteHz[note];
+  const osc=ctx.createOscillator();
+  const g=ctx.createGain();
+  osc.type="square";
+  osc.frequency.value=hz;
+  g.gain.value=0;
+  const t=ctx.currentTime;
+  g.gain.linearRampToValueAtTime(1,t+0.005);
+  osc.connect(g); g.connect(masterGain); osc.start();
+  active.set(key,{osc,g});
+  const base=note[0]()
 
