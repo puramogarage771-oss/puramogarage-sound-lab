@@ -7,7 +7,7 @@
 <style>
   body{background:#000;color:#00ffcc;font-family:monospace;padding:20px;}
   .panel{border:1px solid #00ffcc;padding:14px;margin:14px 0;}
-  button{background:#000;color:#00ffcc;border:1px solid #00ffcc;padding:8px 14px;cursor:pointer;}
+  button{background:#000;color:#00ffcc;border:1px solid #00ffcc;padding:8px 14px;cursor:pointer;margin-right:6px;}
   button:hover{background:#00ffcc;color:#000;}
   .small{opacity:.85;font-size:13px;}
   .code{margin-top:10px;border:1px solid #00ffcc;background:#020404;padding:10px;white-space:pre;}
@@ -15,8 +15,8 @@
 </head>
 <body>
 
-<h1>🎼 Phrase Player</h1>
-<p class="small">最初に「▶ 音を有効化」を押してから再生。</p>
+<h1>🎼 Phrase Player（修正版）</h1>
+<p class="small">最初に「▶ 音を有効化」を1回クリックしてから再生。</p>
 
 <div class="panel">
   <button id="unlock">▶ 音を有効化</button>
@@ -54,7 +54,7 @@ function playTone(hz, ms){
   osc.type="square";
   osc.frequency.value=hz;
 
-  // クリック軽減（短いフェード）
+  // クリック軽減
   const t0=ctx.currentTime;
   g.gain.setValueAtTime(0.0, t0);
   g.gain.linearRampToValueAtTime(1.0, t0 + 0.005);
@@ -66,19 +66,20 @@ function playTone(hz, ms){
   osc.stop(t0 + ms/1000);
 }
 
-// ===== 音名→周波数（Cメジャー想定 / 1オクターブ） =====
+/* ===== 修正ポイント =====
+   ドを C6（1046.50Hz）に統一
+*/
 const HZ = {
-  "ド": 523.25,  // C5
-  "レ": 587.33,  // D5
-  "ミ": 659.26,  // E5
-  "ファ": 698.46,// F5
-  "ソ": 783.99,  // G5
-  "ラ": 880.00,  // A5
-  "シ": 987.77   // B5
+  "ド": 1046.50, // C6 ← ★修正
+  "レ": 1174.66, // D6
+  "ミ": 1318.51, // E6
+  "ファ": 1396.91,// F6
+  "ソ": 1567.98, // G6
+  "ラ": 1760.00, // A6
+  "シ": 1975.53  // B6
 };
 
-// フレーズ：ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
-// 最後のミは伸ばす
+// ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
 const phrase = [
   ["ミ", 260], ["ラ", 260], ["ド", 260], ["シ", 260],
   ["ラ", 260], ["ド", 260], ["ラ", 260], ["シ", 260],
@@ -86,7 +87,7 @@ const phrase = [
   ["ミ", 900]  // ミーーー
 ];
 
-const GAP = 60; // 休符（ms）
+const GAP = 60;
 
 async function playPhrase(){
   await ensure();
