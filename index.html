@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PURAMO GARAGE | SOUND LAB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{
+  background:#000;
+  color:#00ffcc;
+  font-family: monospace;
+  padding:20px;
+}
+h1{font-size:22px;}
+.panel{
+  border:1px solid #00ffcc;
+  padding:16px;
+  margin-bottom:20px;
+}
+button{
+  background:#000;
+  color:#00ffcc;
+  border:1px solid #00ffcc;
+  padding:8px 14px;
+  margin:4px;
+  cursor:pointer;
+}
+button:hover{
+  background:#00ffcc;
+  color:#000;
+}
+input[type=range]{
+  width:100%;
+}
+.value{
+  font-size:18px;
+  margin-top:8px;
+}
+.code{
+  background:#020404;
+  border:1px solid #00ffcc;
+  padding:12px;
+  margin-top:10px;
+  white-space:pre;
+  font-size:14px;
+}
+.small{
+  font-size:13px;
+  opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔊 PURAMO GARAGE – SOUND LAB</h1>
+<p class="small">
+音を確認 → PIC用コードをそのままコピペ
+</p>
+
+<div class="panel">
+  <h2>① 周波数テスト</h2>
+  <input type="range" id="freq" min="150" max="1000" value="262" step="1">
+  <div class="value">
+    周波数: <span id="freqVal">262</span> Hz
+  </div>
+  <div class="value">
+    PIC half_period: <span id="halfVal">1908</span> us
+  </div>
+  <button onclick="start()">▶ 再生</button>
+  <button onclick="stop()">■ 停止</button>
+
+  <div class="code" id="picCode">
+// PIC tone call
+tone(1908, 300);
+  </div>
+</div>
+
+<div clas
 
