@@ -29,13 +29,6 @@ button:hover{
   background:#00ffcc;
   color:#000;
 }
-input[type=range]{
-  width:100%;
-}
-.value{
-  font-size:18px;
-  margin-top:8px;
-}
 .code{
   background:#020404;
   border:1px solid #00ffcc;
@@ -53,104 +46,69 @@ input[type=range]{
 
 <body>
 
-<h1>🔊 PURAMO GARAGE – SOUND LAB</h1>
+<h1>🎹 PURAMO GARAGE – SOUND LAB</h1>
 <p class="small">
-▶ 再生 を1回クリックしてから操作してください
+▶ 再生を1回クリック後、音階ボタンを押してください
 </p>
 
 <div class="panel">
-  <h2>① 周波数テスト</h2>
+  <h2>① 音階テスト</h2>
+  <button onclick="playScale(scaleC4)">▶ ドレミファソラシド（C4）</button>
+  <button onclick="playScale(scaleC5)">▶ ドレミファソラシド（C5）</button>
 
-  <input type="range" id="freq" min="150" max="1000" value="262" step="1">
+  <div class="code">
+// C4 scale
+262 294 330 349 392 440 494 523
 
-  <div class="value">
-    周波数: <span id="freqVal">262</span> Hz
+// C5 scale
+523 587 659 698 784 880 988 1047
   </div>
-  <div class="value">
-    PIC half_period: <span id="halfVal">1908</span> us
-  </div>
-
-  <button onclick="start()">▶ 再生</button>
-  <button onclick="stop()">■ 停止</button>
-
-  <div class="code" id="picCode">
-tone(1908, 300);
-  </div>
-</div>
-
-<div class="panel">
-  <h2>② 音階</h2>
-  <button onclick="setFreq(262)">ド C4</button>
-  <button onclick="setFreq(294)">レ D4</button>
-  <button onclick="setFreq(330)">ミ E4</button>
-  <button onclick="setFreq(349)">ファ F4</button>
-  <button onclick="setFreq(392)">ソ G4</button>
-  <button onclick="setFreq(440)">ラ A4</button>
-  <button onclick="setFreq(494)">シ B4</button>
-  <button onclick="setFreq(523)">ド C5</button>
 </div>
 
 <p class="small">
-half_period = 1,000,000 / (Hz × 2)<br>
-※ PIC実機では -10〜15% 補正が目安
+PIC half_period = 1,000,000 / (Hz × 2)<br>
+※ 実機では -10〜15% 補正が目安
 </p>
 
 <script>
 let ctx = null;
-let osc = null;
 
-const freqSlider = document.getElementById("freq");
-const freqVal = document.getElementById("freqVal");
-const halfVal = document.getElementById("halfVal");
-const picCode = document.getElementById("picCode");
+// 音階定義（Hz）
+const scaleC4 = [262, 294, 330, 349, 392, 440, 494, 523];
+const scaleC5 = [523, 587, 659, 698, 784, 880, 988, 1047];
 
-function update(){
-  const f = Number(freqSlider.value);
-  const half = Math.round(1000000 / (f * 2));
-
-  freqVal.textContent = f;
-  halfVal.textContent = half;
-  picCode.textContent = `tone(${half}, 300);`;
-
-  if(osc){
-    osc.frequency.value = f;
-  }
-}
-
-async function start(){
+async function playTone(freq, duration){
   if(!ctx){
     ctx = new (window.AudioContext || window.webkitAudioContext)();
   }
-  await ctx.resume();   // ← これが無いと鳴らない
+  await ctx.resume();
 
-  if(!osc){
-    osc = ctx.createOscillator();
-    osc.type = "square";      // PICに近い音
-    osc.frequency.value = freqSlider.value;
-    osc.connect(ctx.destination);
-    osc.start();
-  }
-}
+  const osc = ctx.createOscillator();
+  osc.type = "square";       // PICに近い
+  osc.frequency.value = freq;
+  osc.connect(ctx.destination);
+  osc.start();
 
-function stop(){
-  if(osc){
+  setTimeout(() => {
     osc.stop();
     osc.disconnect();
-    osc = null;
-  }
-  if(ctx){
-    ctx.close();
-    ctx = null;
-  }
+  }, duration);
 }
 
-function setFreq(f){
-  freqSlider.value = f;
-  update();
-}
+async function playScale(scale){
+  if(!ctx){
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  await ctx.resume();
 
-freqSlider.addEventListener("input", update);
-update();
+  let time = 0;
+  scale.forEach(freq => {
+    setTimeout(() => {
+      playTone(freq, 350);   // 350ms鳴らす
+    }, time);
+    time += 450;             // 音＋休符
+  });
+}
 </script>
 
 </body>
