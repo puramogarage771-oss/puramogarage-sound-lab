@@ -3,125 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PURAMO GARAGE | SOUND LAB - Keyboard</title>
+<title>PURAMO GARAGE | Phrase Player</title>
 <style>
-body{
-  background:#000; color:#00ffcc; font-family:monospace; padding:20px;
-}
-.panel{border:1px solid #00ffcc; padding:14px; margin:14px 0;}
-button{
-  background:#000; color:#00ffcc; border:1px solid #00ffcc;
-  padding:6px 12px; cursor:pointer; margin-right:6px;
-}
-button:hover{background:#00ffcc;color:#000;}
-.readout{margin-top:8px;font-size:15px;}
-.code{margin-top:8px;border:1px solid #00ffcc;background:#020404;
-      padding:8px;white-space:pre;}
-.keyboard{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;}
-.key{
-  height:200px;background:#fff;color:#000;border-radius:6px;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:8px;font-size:14px;cursor:pointer;
-}
-.key.active{background:#dff;outline:2px solid #00ffcc;}
+  body{background:#000;color:#00ffcc;font-family:monospace;padding:20px;}
+  .panel{border:1px solid #00ffcc;padding:14px;margin:14px 0;}
+  button{background:#000;color:#00ffcc;border:1px solid #00ffcc;padding:8px 14px;cursor:pointer;}
+  button:hover{background:#00ffcc;color:#000;}
+  .small{opacity:.85;font-size:13px;}
+  .code{margin-top:10px;border:1px solid #00ffcc;background:#020404;padding:10px;white-space:pre;}
 </style>
 </head>
 <body>
 
-<h1>🎹 SOUND LAB（ドレミ確認用）</h1>
+<h1>🎼 Phrase Player</h1>
+<p class="small">最初に「▶ 音を有効化」を押してから再生。</p>
 
 <div class="panel">
   <button id="unlock">▶ 音を有効化</button>
-  <button id="stop">■ 全停止</button>
-  <div class="readout" id="readout">Audio: locked</div>
-  <div class="code" id="code">tone(1908, 300);</div>
-</div>
+  <button id="play">▶ フレーズ再生</button>
+  <button id="stop">■ 停止</button>
 
-<div class="panel">
-  <h3>C4 → C5（1オクターブ）</h3>
-  <div class="keyboard" id="kb1"></div>
-</div>
-
-<div class="panel">
-  <h3>C5 → C6（1オクターブ）</h3>
-  <div class="keyboard" id="kb2"></div>
+  <div class="code" id="disp">
+ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
+  </div>
 </div>
 
 <script>
-let ctx=null, gain=null;
-const active={};
-
-const notes=[
-  {n:"C4",s:"ド",hz:261.63},
-  {n:"D4",s:"レ",hz:293.66},
-  {n:"E4",s:"ミ",hz:329.63},
-  {n:"F4",s:"ファ",hz:349.23},
-  {n:"G4",s:"ソ",hz:392.00},
-  {n:"A4",s:"ラ",hz:440.00},
-  {n:"B4",s:"シ",hz:493.88},
-  {n:"C5",s:"ド",hz:523.25},
-];
-
-const notes2=[
-  {n:"C5",s:"ド",hz:523.25},
-  {n:"D5",s:"レ",hz:587.33},
-  {n:"E5",s:"ミ",hz:659.26},
-  {n:"F5",s:"ファ",hz:698.46},
-  {n:"G5",s:"ソ",hz:783.99},
-  {n:"A5",s:"ラ",hz:880.00},
-  {n:"B5",s:"シ",hz:987.77},
-  {n:"C6",s:"ド",hz:1046.5},
-];
-
-function half(hz){return Math.round(1000000/(hz*2));}
+let ctx=null;
+let master=null;
+let timers=[];
 
 async function ensure(){
   if(!ctx){
     ctx=new (window.AudioContext||window.webkitAudioContext)();
-    gain=ctx.createGain(); gain.gain.value=0.25; gain.connect(ctx.destination);
+    master=ctx.createGain();
+    master.gain.value=0.25;
+    master.connect(ctx.destination);
   }
   await ctx.resume();
 }
 
-function start(note){
-  if(active[note.n]) return;
-  const o=ctx.createOscillator();
-  o.type="square"; o.frequency.value=note.hz;
-  o.connect(gain); o.start();
-  active[note.n]=o;
-  document.getElementById("readout").textContent=
-    `${note.s} (${note.n}) ${note.hz.toFixed(1)}Hz / half ${half(note.hz)}us`;
-  document.getElementById("code").textContent=
-    `tone(${half(note.hz)}, 300);`;
+function stopAll(){
+  timers.forEach(t=>clearTimeout(t));
+  timers=[];
 }
 
-function stop(note){
-  const o=active[note.n];
-  if(!o) return;
-  o.stop(); delete active[note.n];
+function playTone(hz, ms){
+  const osc=ctx.createOscillator();
+  const g=ctx.createGain();
+  osc.type="square";
+  osc.frequency.value=hz;
+
+  // クリック軽減（短いフェード）
+  const t0=ctx.currentTime;
+  g.gain.setValueAtTime(0.0, t0);
+  g.gain.linearRampToValueAtTime(1.0, t0 + 0.005);
+  g.gain.linearRampToValueAtTime(0.0, t0 + (ms/1000) - 0.01);
+
+  osc.connect(g);
+  g.connect(master);
+  osc.start();
+  osc.stop(t0 + ms/1000);
 }
 
-function build(id,arr){
-  const kb=document.getElementById(id);
-  arr.forEach(note=>{
-    const d=document.createElement("div");
-    d.className="key"; d.textContent=note.s;
-    d.onpointerdown=async e=>{
-      await ensure(); start(note); d.classList.add("active");
-    };
-    d.onpointerup=()=>{stop(note); d.classList.remove("active");};
-    d.onpointerleave=()=>{stop(note); d.classList.remove("active");};
-    kb.appendChild(d);
-  });
-}
+// ===== 音名→周波数（Cメジャー想定 / 1オクターブ） =====
+const HZ = {
+  "ド": 523.25,  // C5
+  "レ": 587.33,  // D5
+  "ミ": 659.26,  // E5
+  "ファ": 698.46,// F5
+  "ソ": 783.99,  // G5
+  "ラ": 880.00,  // A5
+  "シ": 987.77   // B5
+};
 
-build("kb1",notes);
-build("kb2",notes2);
+// フレーズ：ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
+// 最後のミは伸ばす
+const phrase = [
+  ["ミ", 260], ["ラ", 260], ["ド", 260], ["シ", 260],
+  ["ラ", 260], ["ド", 260], ["ラ", 260], ["シ", 260],
+  ["ラ", 260], ["ファ", 260], ["ソ", 260],
+  ["ミ", 900]  // ミーーー
+];
+
+const GAP = 60; // 休符（ms）
+
+async function playPhrase(){
+  await ensure();
+  stopAll();
+
+  let time = 0;
+  for(const [name, dur] of phrase){
+    const hz = HZ[name];
+    timers.push(setTimeout(()=>playTone(hz, dur), time));
+    time += dur + GAP;
+  }
+}
 
 document.getElementById("unlock").onclick=ensure;
-document.getElementById("stop").onclick=()=>{
-  Object.keys(active).forEach(k=>{active[k].stop();delete active[k];});
-};
+document.getElementById("play").onclick=playPhrase;
+document.getElementById("stop").onclick=stopAll;
 </script>
 
 </body>
