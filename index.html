@@ -1,215 +1,129 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PURAMO GARAGE | SOUND LAB - Keyboard</title>
 <style>
-:root{
-  --bg:#000;
-  --neon:#00ffcc;
-  --panel:#020404;
-}
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--neon);
-  font-family: monospace;
-  padding:20px;
+  background:#000; color:#00ffcc; font-family:monospace; padding:20px;
 }
-h1{font-size:22px;margin:0 0 6px;}
-.small{opacity:.85;font-size:13px;margin:0 0 12px;}
-.panel{
-  border:1px solid var(--neon);
-  padding:14px;
-  margin:14px 0;
-  background: rgba(0,0,0,.35);
-}
+.panel{border:1px solid #00ffcc; padding:14px; margin:14px 0;}
 button{
-  background:transparent;
-  color:var(--neon);
-  border:1px solid var(--neon);
-  padding:8px 12px;
-  cursor:pointer;
-  margin-right:6px;
+  background:#000; color:#00ffcc; border:1px solid #00ffcc;
+  padding:6px 12px; cursor:pointer; margin-right:6px;
 }
-button:hover{background:var(--neon);color:#000;}
-.readout{
-  font-size:16px;
-  margin-top:8px;
-  line-height:1.6;
+button:hover{background:#00ffcc;color:#000;}
+.readout{margin-top:8px;font-size:15px;}
+.code{margin-top:8px;border:1px solid #00ffcc;background:#020404;
+      padding:8px;white-space:pre;}
+.keyboard{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;}
+.key{
+  height:200px;background:#fff;color:#000;border-radius:6px;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:8px;font-size:14px;cursor:pointer;
 }
-.code{
-  margin-top:8px;
-  border:1px solid var(--neon);
-  background:var(--panel);
-  padding:10px;
-  white-space:pre;
-  font-size:14px;
-}
-
-/* ===== Keyboard ===== */
-.keyboard-wrap{
-  width:min(980px, 100%);
-  position:relative;
-  user-select:none;
-  touch-action:none;
-  margin-top:10px;
-}
-.white-keys{
-  display:grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap:6px;
-}
-.white{
-  height:220px;
-  border:1px solid var(--neon);
-  background:#fff;
-  color:#000;
-  border-radius:8px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  padding-bottom:8px;
-  font-size:13px;
-  cursor:pointer;
-}
-.white.active{
-  background:#dff;
-  outline:2px solid var(--neon);
-}
-.black-keys{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:150px;
-}
-.black{
-  position:absolute;
-  width:11%;
-  height:150px;
-  background:#111;
-  border:1px solid var(--neon);
-  border-radius:8px;
-  color:var(--neon);
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  padding-bottom:8px;
-  font-size:11px;
-  cursor:pointer;
-}
-.black.active{
-  background:#033;
-  outline:2px solid var(--neon);
-}
-
-/* 黒鍵位置（白鍵8枚想定） */
-.b-cs{ left:7.5%; }
-.b-ds{ left:19.5%; }
-.b-fs{ left:43.5%; }
-.b-gs{ left:55.5%; }
-.b-as{ left:67.5%; }
+.key.active{background:#dff;outline:2px solid #00ffcc;}
 </style>
 </head>
-
 <body>
 
-<h1>🎹 PURAMO GARAGE – SOUND LAB</h1>
-<p class="small">
-▶ 音を有効化 を1回クリック → 鍵盤を押す（クリック/タップ長押し）
-</p>
+<h1>🎹 SOUND LAB（ドレミ確認用）</h1>
 
 <div class="panel">
-  <button id="unlockBtn">▶ 音を有効化</button>
-  <button id="stopBtn">■ 全停止</button>
-  <button id="copyBtn">COPY tone()</button>
-
-  <div class="readout" id="readout">
-    Note: - / Hz: - / half_period: -
-  </div>
-
-  <div class="code" id="codeBox">tone(1908, 300);</div>
-
-  <p class="small">
-    half_period(us) = 1,000,000 / (Hz × 2)（PIC実機は -10〜15%補正が目安）
-  </p>
+  <button id="unlock">▶ 音を有効化</button>
+  <button id="stop">■ 全停止</button>
+  <div class="readout" id="readout">Audio: locked</div>
+  <div class="code" id="code">tone(1908, 300);</div>
 </div>
 
-<!-- ===== Keyboard C4–C5 ===== -->
 <div class="panel">
-  <h2 style="font-size:16px;margin:0 0 6px;">1オクターブ目（C4–C5）</h2>
-  <div class="keyboard-wrap">
-    <div class="white-keys" id="whiteC4"></div>
-    <div class="black-keys">
-      <div class="black b-cs" data-note="C#4">ド♯</div>
-      <div class="black b-ds" data-note="D#4">レ♯</div>
-      <div class="black b-fs" data-note="F#4">ファ♯</div>
-      <div class="black b-gs" data-note="G#4">ソ♯</div>
-      <div class="black b-as" data-note="A#4">ラ♯</div>
-    </div>
-  </div>
+  <h3>C4 → C5（1オクターブ）</h3>
+  <div class="keyboard" id="kb1"></div>
 </div>
 
-<!-- ===== Keyboard C5–C6 ===== -->
 <div class="panel">
-  <h2 style="font-size:16px;margin:0 0 6px;">2オクターブ目（C5–C6）</h2>
-  <div class="keyboard-wrap">
-    <div class="white-keys" id="whiteC5"></div>
-    <div class="black-keys">
-      <div class="black b-cs" data-note="C#5">ド♯</div>
-      <div class="black b-ds" data-note="D#5">レ♯</div>
-      <div class="black b-fs" data-note="F#5">ファ♯</div>
-      <div class="black b-gs" data-note="G#5">ソ♯</div>
-      <div class="black b-as" data-note="A#5">ラ♯</div>
-    </div>
-  </div>
+  <h3>C5 → C6（1オクターブ）</h3>
+  <div class="keyboard" id="kb2"></div>
 </div>
 
 <script>
-/* ===== Web Audio ===== */
-let ctx=null, masterGain=null;
-const active=new Map();
+let ctx=null, gain=null;
+const active={};
 
-const noteHz={
-  C4:261.63,"C#4":277.18,D4:293.66,"D#4":311.13,E4:329.63,
-  F4:349.23,"F#4":369.99,G4:392.00,"G#4":415.30,A4:440.00,"A#4":466.16,B4:493.88,
-  C5:523.25,"C#5":554.37,D5:587.33,"D#5":622.25,E5:659.26,
-  F5:698.46,"F#5":739.99,G5:783.99,"G#5":830.61,A5:880.00,"A#5":932.33,B5:987.77,
-  C6:1046.50
-};
+const notes=[
+  {n:"C4",s:"ド",hz:261.63},
+  {n:"D4",s:"レ",hz:293.66},
+  {n:"E4",s:"ミ",hz:329.63},
+  {n:"F4",s:"ファ",hz:349.23},
+  {n:"G4",s:"ソ",hz:392.00},
+  {n:"A4",s:"ラ",hz:440.00},
+  {n:"B4",s:"シ",hz:493.88},
+  {n:"C5",s:"ド",hz:523.25},
+];
 
-const solfege={
-  C:"ド",D:"レ",E:"ミ",F:"ファ",G:"ソ",A:"ラ",B:"シ"
-};
+const notes2=[
+  {n:"C5",s:"ド",hz:523.25},
+  {n:"D5",s:"レ",hz:587.33},
+  {n:"E5",s:"ミ",hz:659.26},
+  {n:"F5",s:"ファ",hz:698.46},
+  {n:"G5",s:"ソ",hz:783.99},
+  {n:"A5",s:"ラ",hz:880.00},
+  {n:"B5",s:"シ",hz:987.77},
+  {n:"C6",s:"ド",hz:1046.5},
+];
 
-function halfPeriod(hz){return Math.round(1000000/(hz*2));}
+function half(hz){return Math.round(1000000/(hz*2));}
 
-const readout=document.getElementById("readout");
-const codeBox=document.getElementById("codeBox");
-
-async function ensureAudio(){
+async function ensure(){
   if(!ctx){
     ctx=new (window.AudioContext||window.webkitAudioContext)();
-    masterGain=ctx.createGain();
-    masterGain.gain.value=0.25;
-    masterGain.connect(ctx.destination);
+    gain=ctx.createGain(); gain.gain.value=0.25; gain.connect(ctx.destination);
   }
   await ctx.resume();
 }
 
-function startNote(note,key){
-  if(active.has(key)) return;
-  const hz=noteHz[note];
-  const osc=ctx.createOscillator();
-  const g=ctx.createGain();
-  osc.type="square";
-  osc.frequency.value=hz;
-  g.gain.value=0;
-  const t=ctx.currentTime;
-  g.gain.linearRampToValueAtTime(1,t+0.005);
-  osc.connect(g); g.connect(masterGain); osc.start();
-  active.set(key,{osc,g});
-  const base=note[0]()
+function start(note){
+  if(active[note.n]) return;
+  const o=ctx.createOscillator();
+  o.type="square"; o.frequency.value=note.hz;
+  o.connect(gain); o.start();
+  active[note.n]=o;
+  document.getElementById("readout").textContent=
+    `${note.s} (${note.n}) ${note.hz.toFixed(1)}Hz / half ${half(note.hz)}us`;
+  document.getElementById("code").textContent=
+    `tone(${half(note.hz)}, 300);`;
+}
+
+function stop(note){
+  const o=active[note.n];
+  if(!o) return;
+  o.stop(); delete active[note.n];
+}
+
+function build(id,arr){
+  const kb=document.getElementById(id);
+  arr.forEach(note=>{
+    const d=document.createElement("div");
+    d.className="key"; d.textContent=note.s;
+    d.onpointerdown=async e=>{
+      await ensure(); start(note); d.classList.add("active");
+    };
+    d.onpointerup=()=>{stop(note); d.classList.remove("active");};
+    d.onpointerleave=()=>{stop(note); d.classList.remove("active");};
+    kb.appendChild(d);
+  });
+}
+
+build("kb1",notes);
+build("kb2",notes2);
+
+document.getElementById("unlock").onclick=ensure;
+document.getElementById("stop").onclick=()=>{
+  Object.keys(active).forEach(k=>{active[k].stop();delete active[k];});
+};
+</script>
+
+</body>
+</html>
 
