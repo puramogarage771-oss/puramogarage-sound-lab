@@ -2,108 +2,75 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PURAMO GARAGE | Phrase Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GODFATHER MELODY TEST</title>
 <style>
-  body{background:#000;color:#00ffcc;font-family:monospace;padding:20px;}
-  .panel{border:1px solid #00ffcc;padding:14px;margin:14px 0;}
-  button{background:#000;color:#00ffcc;border:1px solid #00ffcc;padding:8px 14px;cursor:pointer;margin-right:6px;}
-  button:hover{background:#00ffcc;color:#000;}
-  .small{opacity:.85;font-size:13px;}
-  .code{margin-top:10px;border:1px solid #00ffcc;background:#020404;padding:10px;white-space:pre;}
+body{
+  background:#000;
+  color:#00ffcc;
+  font-family:monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+button{
+  background:#000;
+  color:#00ffcc;
+  border:1px solid #00ffcc;
+  padding:16px 28px;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow:0 0 12px rgba(0,255,204,0.6);
+}
+button:hover{
+  box-shadow:0 0 24px rgba(0,255,204,1);
+}
 </style>
 </head>
 <body>
 
-<h1>🎼 Phrase Player（修正版）</h1>
-<p class="small">最初に「▶ 音を有効化」を1回クリックしてから再生。</p>
-
-<div class="panel">
-  <button id="unlock">▶ 音を有効化</button>
-  <button id="play">▶ フレーズ再生</button>
-  <button id="stop">■ 停止</button>
-
-  <div class="code" id="disp">
-ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
-  </div>
-</div>
+<button onclick="playMelody()">▶ PLAY GODFATHER</button>
 
 <script>
-let ctx=null;
-let master=null;
-let timers=[];
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const ctx = new AudioContext();
 
-async function ensure(){
-  if(!ctx){
-    ctx=new (window.AudioContext||window.webkitAudioContext)();
-    master=ctx.createGain();
-    master.gain.value=0.25;
-    master.connect(ctx.destination);
-  }
-  await ctx.resume();
-}
-
-function stopAll(){
-  timers.forEach(t=>clearTimeout(t));
-  timers=[];
-}
-
-function playTone(hz, ms){
-  const osc=ctx.createOscillator();
-  const g=ctx.createGain();
-  osc.type="square";
-  osc.frequency.value=hz;
-
-  // クリック軽減
-  const t0=ctx.currentTime;
-  g.gain.setValueAtTime(0.0, t0);
-  g.gain.linearRampToValueAtTime(1.0, t0 + 0.005);
-  g.gain.linearRampToValueAtTime(0.0, t0 + (ms/1000) - 0.01);
-
-  osc.connect(g);
-  g.connect(master);
+function playTone(freq, duration){
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "square";   // PICっぽい音
+  osc.frequency.value = freq;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  gain.gain.value = 0.2;
   osc.start();
-  osc.stop(t0 + ms/1000);
+  setTimeout(()=>{
+    osc.stop();
+  }, duration);
 }
 
-/* ===== 修正ポイント =====
-   ドを C6（1046.50Hz）に統一
-*/
-const HZ = {
-  "ド": 1046.50, // C6 ← ★修正
-  "レ": 1174.66, // D6
-  "ミ": 1318.51, // E6
-  "ファ": 1396.91,// F6
-  "ソ": 1567.98, // G6
-  "ラ": 1760.00, // A6
-  "シ": 1975.53  // B6
-};
-
-// ミ ラ ド シ ラ ド ラ シ ラ ファ ソ ミーーー
-const phrase = [
-  ["ミ", 260], ["ラ", 260], ["ド", 260], ["シ", 260],
-  ["ラ", 260], ["ド", 260], ["ラ", 260], ["シ", 260],
-  ["ラ", 260], ["ファ", 260], ["ソ", 260],
-  ["ミ", 900]  // ミーーー
-];
-
-const GAP = 60;
-
-async function playPhrase(){
-  await ensure();
-  stopAll();
-
-  let time = 0;
-  for(const [name, dur] of phrase){
-    const hz = HZ[name];
-    timers.push(setTimeout(()=>playTone(hz, dur), time));
-    time += dur + GAP;
-  }
+function playMelody(){
+  let t = 0;
+  const seq = [
+    [330, 400], // ミ
+    [440, 400], // ラ
+    [523, 400], // ド高
+    [494, 300], // シ
+    [440, 400], // ラ
+    [523, 400], // ド高
+    [440, 400], // ラ
+    [494, 300], // シ
+    [440, 400], // ラ
+    [349, 400], // ファ
+    [392, 400], // ソ
+    [330, 900], // ミーーー
+  ];
+  seq.forEach(note=>{
+    setTimeout(()=>playTone(note[0], note[1]), t);
+    t += note[1] + 50;
+  });
 }
-
-document.getElementById("unlock").onclick=ensure;
-document.getElementById("play").onclick=playPhrase;
-document.getElementById("stop").onclick=stopAll;
 </script>
 
 </body>
