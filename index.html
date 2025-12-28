@@ -1,158 +1,22 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PURAMO GARAGE // DRIFT CORNER LOOP</title>
-<style>
-  html,body{margin:0;height:100%;background:#000;overflow:hidden;}
-  canvas{display:block;width:100vw;height:100vh;}
-  .hud{
-    position:fixed;left:14px;top:12px;z-index:2;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    color:#00ffcc; font-size:12px; letter-spacing:.12em;
-    text-shadow:0 0 10px rgba(0,255,204,.35);
-    user-select:none;
-    opacity:.9;
-  }
-  .hint{
-    position:fixed;left:14px;bottom:12px;z-index:2;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    color:#9ff; font-size:11px; letter-spacing:.08em;
-    opacity:.75; user-select:none;
-  }
-</style>
-</head>
-<body>
-<div class="hud">
-  PURAMO GARAGE // ONE CORNER DRIFT<br>
-  MODE: CANVAS LOOP
+<!-- ===== DRIFT SIMULATOR ===== -->
+<div style="
+  width:100%;
+  height:80vh;
+  border:1px solid #00ffcc;
+  box-shadow:0 0 18px rgba(0,255,204,.35);
+  background:#000;
+">
+  <iframe
+    src="./drift.html"
+    style="
+      width:100%;
+      height:100%;
+      border:none;
+      display:block;
+    "
+    loading="eager"
+    allow="autoplay"
+  ></iframe>
 </div>
-<div class="hint">
-  [Space] slow-mo / [R] reset
-</div>
-<canvas id="c"></canvas>
-
-<script>
-(() => {
-  const canvas = document.getElementById("c");
-  const ctx = canvas.getContext("2d");
-
-  let W=0,H=0,DPR=1;
-  function resize(){
-    DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    W = Math.floor(innerWidth * DPR);
-    H = Math.floor(innerHeight * DPR);
-    canvas.width = W; canvas.height = H;
-    canvas.style.width = innerWidth+"px";
-    canvas.style.height = innerHeight+"px";
-    ctx.setTransform(1,0,0,1,0,0);
-  }
-  addEventListener("resize", resize, {passive:true});
-  resize();
-
-  // ---- Parameters you might tweak ----
-  const neon = "#00ffcc";
-  const asphalt = "#070a0c";
-  const curbA = "#cfd7df";
-  const curbB = "#e14b4b";
-  const smokeCol = "rgba(210,255,255,0.10)";
-
-  // Corner geometry (a single right-hander)
-  // We'll draw a big circular arc for inside/outside edges.
-  function trackGeom(){
-    const cx = W*0.62, cy = H*0.62;
-    const Rmid = Math.min(W,H)*0.42;
-    const width = Math.min(W,H)*0.16;
-    return {cx,cy, Rmid, width, Rin: Rmid - width*0.5, Rout: Rmid + width*0.5};
-  }
-
-  // Utility
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const lerp=(a,b,t)=>a+(b-a)*t;
-  const smoothstep=(a,b,t)=>{t=clamp((t-a)/(b-a),0,1);return t*t*(3-2*t);};
-
-  // Time + controls
-  let t0 = performance.now();
-  let slow = 1;
-  addEventListener("keydown", (e)=>{
-    if(e.code==="Space") slow = slow===1 ? 0.35 : 1;
-    if(e.key==="r"||e.key==="R") t0 = performance.now();
-  });
-
-  // Car state (parametric loop around the corner)
-  // We'll use phase p in [0,1) looping.
-  function carPose(p){
-    const g = trackGeom();
-
-    // Path: approach straight -> arc -> exit straight
-    // Build using segments in normalized p.
-    const pIn=0.30, pArc=0.50, pOut=0.20; // sums 1.0
-    // Approach straight line (coming from bottom-left-ish toward corner entry)
-    // Then arc around center
-    // Then exit straight (toward top-right-ish)
-
-    // Choose entry and exit angles for the arc
-    const ang0 = Math.PI*1.15;   // entry angle
-    const ang1 = Math.PI*1.95;   // exit angle (right-hander)
-    const Rpath = g.Rmid;
-
-    // Precompute key points
-    const entry = {x: g.cx + Math.cos(ang0)*Rpath, y: g.cy + Math.sin(ang0)*Rpath};
-    const exit  = {x: g.cx + Math.cos(ang1)*Rpath, y: g.cy + Math.sin(ang1)*Rpath};
-
-    // Approach start/end points
-    const appStart = {x: entry.x - W*0.45, y: entry.y + H*0.35};
-    const outEnd   = {x: exit.x + W*0.35, y: exit.y - H*0.35};
-
-    let x,y, heading, speed;
-
-    if(p < pIn){
-      // Approach straight
-      const u = p / pIn;
-      x = lerp(appStart.x, entry.x, u);
-      y = lerp(appStart.y, entry.y, u);
-      heading = Math.atan2(entry.y - appStart.y, entry.x - appStart.x);
-      speed = lerp(1.25, 1.75, smoothstep(0,1,u)); // faster into entry
-    } else if(p < pIn + pArc){
-      // Corner arc
-      const u = (p - pIn) / pArc;
-      const ang = lerp(ang0, ang1, u);
-      x = g.cx + Math.cos(ang)*Rpath;
-      y = g.cy + Math.sin(ang)*Rpath;
-
-      // Tangent direction (heading along arc)
-      heading = ang + Math.PI/2;
-
-      // Reduce speed mid-corner then pick up
-      const mid = 1 - Math.abs(u-0.5)*2;
-      speed = lerp(1.35, 1.75, smoothstep(0,1,1-mid)); // slower at peak slip
-    } else {
-      // Exit straight
-      const u = (p - (pIn + pArc)) / pOut;
-      x = lerp(exit.x, outEnd.x, u);
-      y = lerp(exit.y, outEnd.y, u);
-      heading = Math.atan2(outEnd.y - exit.y, outEnd.x - exit.x);
-      speed = lerp(1.55, 2.05, smoothstep(0,1,u));
-    }
-
-    // Drift angle (slip): strongest in the arc, some at entry/exit
-    let slip = 0;
-    if(p < pIn){
-      const u = p / pIn;
-      slip = lerp(0.05, 0.30, smoothstep(0.55,1,u)); // begin to set
-    } else if(p < pIn + pArc){
-      const u = (p - pIn) / pArc;
-      // strong drift: peaks near mid
-      const peak = Math.sin(u*Math.PI);
-      slip = 0.55 * peak; // rad
-    } else {
-      const u = (p - (pIn + pArc)) / pOut;
-      slip = lerp(0.22, 0.05, smoothstep(0,1,u)); // straighten out
-    }
-
-    // Counter-steer: front wheels point opposite the slip (visual cue)
-    const steer = clamp(-slip*0.9, -0.55, 0.55);
-
-    // Car yaw (body
+<!-- =========================== -->
 
