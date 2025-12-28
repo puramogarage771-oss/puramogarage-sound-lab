@@ -1,22 +1,198 @@
-<!-- ===== DRIFT SIMULATOR ===== -->
-<div style="
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PURAMO GARAGE // ONE CORNER DRIFT</title>
+
+<style>
+html,body{
+  margin:0;
   width:100%;
-  height:80vh;
-  border:1px solid #00ffcc;
-  box-shadow:0 0 18px rgba(0,255,204,.35);
+  height:100%;
   background:#000;
-">
-  <iframe
-    src="./drift.html"
-    style="
-      width:100%;
-      height:100%;
-      border:none;
-      display:block;
-    "
-    loading="eager"
-    allow="autoplay"
-  ></iframe>
+  overflow:hidden;
+}
+canvas{
+  display:block;
+  width:100vw;
+  height:100vh;
+}
+.hud{
+  position:fixed;
+  left:14px;
+  top:12px;
+  font-family:monospace;
+  font-size:13px;
+  color:#00ffcc;
+  letter-spacing:.12em;
+  text-shadow:0 0 10px rgba(0,255,204,.4);
+}
+.help{
+  position:fixed;
+  left:14px;
+  bottom:12px;
+  font-family:monospace;
+  font-size:11px;
+  color:#9ff;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+<div class="hud">
+PURAMO GARAGE // ONE CORNER DRIFT<br>
+MODE : CANVAS LOOP
 </div>
-<!-- =========================== -->
+
+<div class="help">
+[Space] slow motion / [R] reset
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+let W=0,H=0,DPR=1;
+
+function resize(){
+  const rect = canvas.getBoundingClientRect();
+  DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  canvas.width  = rect.width  * DPR;
+  canvas.height = rect.height * DPR;
+  W = canvas.width;
+  H = canvas.height;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener("resize", resize);
+resize();
+
+// ===== controls =====
+let slow = 1;
+let start = performance.now();
+
+document.addEventListener("keydown", e=>{
+  if(e.code==="Space") slow = slow===1 ? 0.35 : 1;
+  if(e.key==="r"||e.key==="R") start = performance.now();
+});
+
+// ===== helpers =====
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+// ===== track geometry =====
+function track(){
+  const cx = W*0.65;
+  const cy = H*0.65;
+  const R  = Math.min(W,H)*0.42;
+  const w  = Math.min(W,H)*0.18;
+  return {cx,cy,R,w};
+}
+
+// ===== car motion =====
+function carPose(p){
+  const g = track();
+  const a0 = Math.PI*1.15;
+  const a1 = Math.PI*1.95;
+
+  let x,y,dir,slip;
+
+  if(p<0.25){
+    const t=p/0.25;
+    x = lerp(g.cx-500, g.cx+Math.cos(a0)*g.R, t);
+    y = lerp(g.cy+300, g.cy+Math.sin(a0)*g.R, t);
+    dir = Math.atan2(1,-1);
+    slip = t*0.2;
+  }
+  else if(p<0.75){
+    const t=(p-0.25)/0.5;
+    const a = lerp(a0,a1,t);
+    x = g.cx + Math.cos(a)*g.R;
+    y = g.cy + Math.sin(a)*g.R;
+    dir = a + Math.PI/2;
+    slip = Math.sin(t*Math.PI)*0.6;
+  }
+  else{
+    const t=(p-0.75)/0.25;
+    x = lerp(g.cx+Math.cos(a1)*g.R, g.cx+400, t);
+    y = lerp(g.cy+Math.sin(a1)*g.R, g.cy-400, t);
+    dir = Math.atan2(-1,1);
+    slip = (1-t)*0.2;
+  }
+
+  return {x,y,dir,slip};
+}
+
+// ===== draw =====
+function drawTrack(){
+  const g = track();
+  ctx.fillStyle="#000";
+  ctx.fillRect(0,0,W,H);
+
+  ctx.fillStyle="#0a0d10";
+  ctx.beginPath();
+  ctx.arc(g.cx,g.cy,g.R+g.w/2,Math.PI*0.9,Math.PI*2.05);
+  ctx.arc(g.cx,g.cy,g.R-g.w/2,Math.PI*2.05,Math.PI*0.9,true);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle="rgba(0,255,204,.15)";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.arc(g.cx,g.cy,g.R,Math.PI*0.9,Math.PI*2.05);
+  ctx.stroke();
+}
+
+function drawCar(pose){
+  ctx.save();
+  ctx.translate(pose.x,pose.y);
+  ctx.rotate(pose.dir+pose.slip);
+
+  ctx.fillStyle="rgba(0,255,204,.25)";
+  ctx.strokeStyle="rgba(0,255,204,.6)";
+  ctx.lineWidth=2;
+
+  ctx.beginPath();
+  ctx.roundRect(-28,-14,56,28,8);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle="rgba(255,255,255,.8)";
+  ctx.fillRect(18,-10,4,6);
+  ctx.fillRect(18,4,4,6);
+
+  ctx.restore();
+
+  if(Math.abs(pose.slip)>0.2){
+    ctx.fillStyle="rgba(200,255,255,.08)";
+    ctx.beginPath();
+    ctx.arc(
+      pose.x-Math.cos(pose.dir)*30,
+      pose.y-Math.sin(pose.dir)*30,
+      18+Math.random()*10,
+      0,Math.PI*2
+    );
+    ctx.fill();
+  }
+}
+
+// ===== loop =====
+function loop(now){
+  const t=((now-start)/1000)*slow;
+  const p=(t/6)%1;
+
+  const pose=carPose(p);
+
+  drawTrack();
+  drawCar(pose);
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
 
