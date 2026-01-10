@@ -10,53 +10,46 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: black;
+  background: #05070d; /* 画像の平均色に近い */
   overflow: hidden;
 }
 
-/* ===== グリッド全体 ===== */
-.screen {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  width: 100vw;
-  height: 100vh;
-}
-
-/* ===== 左右背景 ===== */
-.side {
-  background-image: url("bg_admin_core.png");
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px) brightness(0.6) saturate(0.9);
-}
-
-/* ===== 中央（9:16・実寸）===== */
-.center {
-  height: 100vh;
-  aspect-ratio: 9 / 16;
+/* ===== 背景（1回だけ） ===== */
+.bg {
+  position: fixed;
+  inset: 0;
   background-image: url("bg_admin_core.png");
   background-size: contain;
-  background-position: center;
   background-repeat: no-repeat;
+  background-position: center;
 }
 
-/* ===== スマホ対応 ===== */
-@media (max-aspect-ratio: 9/16) {
-  .screen {
-    grid-template-columns: 0 1fr 0;
-  }
-  .side {
-    display: none;
-  }
+/* ===== 黒帯ではなく色で埋める ===== */
+.bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 35%,
+    rgba(5,7,13,0.95) 65%
+  );
+}
+
+/* ===== ここが動画に変わる ===== */
+video.bg {
+  object-fit: contain;
 }
 </style>
 </head>
 
 <body>
-  <div class="screen">
-    <div class="side"></div>
-    <div class="center"></div>
-    <div class="side"></div>
-  </div>
+  <!-- 画像版 -->
+  <div class="bg"></div>
+
+  <!-- 動画版にする時はこれに差し替え -->
+  <!--
+  <video class="bg" autoplay muted loop playsinline src="bg_admin_core.mp4"></video>
+  -->
 </body>
 </html>
