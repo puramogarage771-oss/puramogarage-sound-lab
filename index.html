@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-
+<title>管理コア</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 html, body {
@@ -22,14 +23,16 @@ html, body {
   align-items: center;
 }
 
-/* 背景（動画 or PNG） */
+/* 背景 */
 .bg {
   position: absolute;
   inset: -20%;
   z-index: 0;
+  overflow: hidden;
 }
 
-.bg video {
+.bg video,
+.bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -43,14 +46,15 @@ html, body {
   height: 85vh;
   aspect-ratio: 9 / 16;
   z-index: 1;
+  background: #000;
   box-shadow: 0 0 80px rgba(0,255,255,0.25);
 }
 
-.main video {
+.main video,
+.main img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: #000;
 }
 
 .logo {
@@ -70,23 +74,41 @@ html, body {
 
 <body>
 <div class="world">
-
-  <!-- 背景 -->
-  <div class="bg">
-    <video autoplay muted loop playsinline poster="bg_admin_core.png">
-      <source src="admin_core.mp4" type="video/mp4">
-    </video>
-  </div>
-
-  <!-- 中央 -->
-  <div class="main">
-    <video autoplay muted loop playsinline poster="bg_admin_core.png">
-      <source src="admin_core.mp4" type="video/mp4">
-    </video>
-  </div>
-
+  <div class="bg" id="bg"></div>
+  <div class="main" id="main"></div>
   <div class="logo">管理コア</div>
-
 </div>
+
+<script>
+const VIDEO = "admin_core.mp4";
+const IMAGE = "bg_admin_core.png";
+
+function exists(url) {
+  return fetch(url, { method: "HEAD" })
+    .then(res => res.ok)
+    .catch(() => false);
+}
+
+(async () => {
+  const bg = document.getElementById("bg");
+  const main = document.getElementById("main");
+
+  if (await exists(VIDEO)) {
+    // 動画があれば動画
+    bg.innerHTML = `
+      <video autoplay muted loop playsinline>
+        <source src="${VIDEO}" type="video/mp4">
+      </video>`;
+    main.innerHTML = `
+      <video autoplay muted loop playsinline>
+        <source src="${VIDEO}" type="video/mp4">
+      </video>`;
+  } else if (await exists(IMAGE)) {
+    // 動画が無ければ画像
+    bg.innerHTML = `<img src="${IMAGE}">`;
+    main.innerHTML = `<img src="${IMAGE}">`;
+  }
+})();
+</script>
 </body>
 </html>
