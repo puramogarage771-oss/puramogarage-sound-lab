@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADMIN CORE</title>
 
 <style>
@@ -20,54 +20,42 @@ html, body {
   inset: 0;
 }
 
-/* 遠景：奥行き */
+/* 最奥：世界の広がり */
 .bg-far {
   position: absolute;
   inset: -20%;
   background: url("bg_admin.png") center / cover no-repeat;
-  filter: blur(40px) brightness(0.6);
-  transform: scale(1.1);
+  filter: blur(32px) brightness(0.85) saturate(1.15);
+  transform: scale(1.08);
 }
 
-/* 中景：本体 */
+/* 中景：元画像の情報密度 */
 .bg-mid {
   position: absolute;
-  inset: -10%;
+  inset: -5%;
   background: url("bg_admin.png") center / cover no-repeat;
   opacity: 0.35;
-  mix-blend-mode: screen;
 }
 
-/* 近景：空間の揺らぎ */
+/* 近景：空間の呼吸 */
 .bg-near {
   position: absolute;
   inset: 0;
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(120,160,255,0.04),
-      rgba(120,160,255,0.04) 1px,
+      rgba(120,160,255,0.035),
+      rgba(120,160,255,0.035) 1px,
       transparent 1px,
-      transparent 4px
+      transparent 6px
     );
-  animation: drift 90s linear infinite;
+  animation: drift 120s linear infinite;
+  pointer-events: none;
 }
 
 @keyframes drift {
   from { transform: translateY(0); }
-  to   { transform: translateY(-10%); }
-}
-
-/* 中央テスト表示 */
-.core {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #00ffff;
-  font-size: 24px;
-  letter-spacing: 0.2em;
+  to   { transform: translateY(-12%); }
 }
 </style>
 </head>
@@ -78,7 +66,5 @@ html, body {
     <div class="bg-mid"></div>
     <div class="bg-near"></div>
   </div>
-
-  <div class="core">ADMIN CORE</div>
 </body>
 </html>
