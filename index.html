@@ -6,17 +6,15 @@
 <title>ADMIN CORE</title>
 
 <style>
-/* ===== 全体 ===== */
 html, body {
   margin: 0;
-  padding: 0;
   width: 100%;
   height: 100%;
-  background: #000;
+  background: black;
   overflow: hidden;
 }
 
-/* ===== 表示領域 ===== */
+/* 中央の縦空間（9:16） */
 .stage {
   position: fixed;
   inset: 0;
@@ -25,38 +23,40 @@ html, body {
   align-items: center;
 }
 
-/* ===== 動画・画像 共通 ===== */
-.stage video,
-.stage img {
-  height: 100vh;
-  width: auto;
-  max-width: 100vw;
-  object-fit: contain;
-  display: block;
+/* 9:16 の器 */
+.frame {
+  aspect-ratio: 9 / 16;
+  height: 90vh;
+  max-height: 100%;
+  background: black;
 }
 
-/* ===== 管理コア文字を完全に殺す ===== */
-.logo,
-.title,
-.caption,
-.text,
-.admin-core {
-  display: none !important;
+/* video / img 共通 */
+.frame video,
+.frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 </style>
 </head>
 
 <body>
-  <div class="stage">
 
-    <!-- ▼ 動画がある場合（優先表示） -->
-    <video autoplay loop muted playsinline>
-      <source src="./bg_admin_core.mp4" type="video/mp4">
+<div class="stage">
+  <div class="frame">
+
+    <!-- 動画がある場合はこちらが有効 -->
+    <video autoplay loop muted playsinline onerror="this.style.display='none'">
+      <source src="bg_admin_core.mp4" type="video/mp4">
     </video>
 
-    <!-- ▼ 動画が無い場合だけ画像を使うなら、上の video を消してこれを使う -->
-    <!-- <img src="./bg_admin_core.png" alt=""> -->
+    <!-- 動画が無い場合の仮表示 -->
+    <img src="bg_admin_core.png" alt="admin core">
 
   </div>
+</div>
+
 </body>
 </html>
