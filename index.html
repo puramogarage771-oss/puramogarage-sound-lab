@@ -1,70 +1,89 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADMIN CORE</title>
 
 <style>
 html, body {
   margin: 0;
-  width: 100%;
+  padding: 0;
   height: 100%;
   overflow: hidden;
   background: #000;
 }
 
-/* 世界コンテナ */
+/* 全空間 */
 .world {
   position: fixed;
   inset: 0;
+  overflow: hidden;
 }
 
-/* 最奥：世界の広がり */
-.bg-far {
+/* 共通レイヤ */
+.bg {
   position: absolute;
   inset: -20%;
-  background: url("bg_admin.png") center / cover no-repeat;
-  filter: blur(32px) brightness(0.85) saturate(1.15);
-  transform: scale(1.08);
+  background: url("bg_admin_core.png") center / cover no-repeat;
 }
 
-/* 中景：元画像の情報密度 */
-.bg-mid {
-  position: absolute;
-  inset: -5%;
-  background: url("bg_admin.png") center / cover no-repeat;
+/* 奥：ぼけた世界（空気） */
+.bg.far {
+  filter: blur(45px) brightness(0.6);
+  transform: scale(1.1);
+}
+
+/* 中：実体の層 */
+.bg.mid {
+  inset: -10%;
   opacity: 0.35;
+  mix-blend-mode: screen;
 }
 
-/* 近景：空間の呼吸 */
-.bg-near {
-  position: absolute;
+/* 手前：情報ノイズ */
+.bg.near {
   inset: 0;
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(120,160,255,0.035),
-      rgba(120,160,255,0.035) 1px,
+      rgba(120,160,255,0.05),
+      rgba(120,160,255,0.05) 1px,
       transparent 1px,
-      transparent 6px
-    );
-  animation: drift 120s linear infinite;
-  pointer-events: none;
+      transparent 4px
+    ),
+    url("bg_admin_core.png") center / cover no-repeat;
+  animation: drift 90s linear infinite;
 }
 
 @keyframes drift {
   from { transform: translateY(0); }
-  to   { transform: translateY(-12%); }
+  to   { transform: translateY(-10%); }
+}
+
+/* 起動テキスト（今はこれだけ） */
+.boot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, monospace;
+  letter-spacing: 0.2em;
+  color: #00ffff;
+  font-size: 18px;
+  opacity: 0.85;
 }
 </style>
 </head>
 
 <body>
   <div class="world">
-    <div class="bg-far"></div>
-    <div class="bg-mid"></div>
-    <div class="bg-near"></div>
+    <div class="bg far"></div>
+    <div class="bg mid"></div>
+    <div class="bg near"></div>
+
+    <div class="boot">ADMIN CORE</div>
   </div>
 </body>
 </html>
