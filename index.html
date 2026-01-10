@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMIN CORE</title>
+
+<style>
 html, body {
   margin: 0;
   height: 100%;
@@ -5,12 +13,13 @@ html, body {
   background: #000;
 }
 
+/* 世界 */
 .world {
   position: fixed;
   inset: 0;
 }
 
-/* 一番奥：ぼかした世界 */
+/* 奥：ぼかした世界 */
 .bg-far {
   position: absolute;
   inset: -20%;
@@ -19,7 +28,7 @@ html, body {
   transform: scale(1.1);
 }
 
-/* 中間：色と情報 */
+/* 中：色と情報 */
 .bg-mid {
   position: absolute;
   inset: -10%;
@@ -42,6 +51,22 @@ html, body {
     );
   animation: drift 90s linear infinite;
 }
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-10%); }
+}
+</style>
+</head>
+
+<body>
+  <div class="world">
+    <div class="bg-far"></div>
+    <div class="bg-mid"></div>
+    <div class="bg-near"></div>
+  </div>
+</body>
+</html>
 
 @keyframes drift {
   from { transform: translateY(0); }
