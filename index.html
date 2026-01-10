@@ -14,7 +14,6 @@ html, body {
   overflow: hidden;
 }
 
-/* 中央の縦空間（9:16） */
 .stage {
   position: fixed;
   inset: 0;
@@ -23,17 +22,14 @@ html, body {
   align-items: center;
 }
 
-/* 9:16 の器 */
 .frame {
   aspect-ratio: 9 / 16;
   height: 90vh;
-  max-height: 100%;
   background: black;
 }
 
-/* video / img 共通 */
-.frame video,
-.frame img {
+.frame img,
+.frame video {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -45,18 +41,33 @@ html, body {
 <body>
 
 <div class="stage">
-  <div class="frame">
+  <div class="frame" id="media-frame">
 
-    <!-- 動画がある場合はこちらが有効 -->
-    <video autoplay loop muted playsinline onerror="this.style.display='none'">
-      <source src="bg_admin_core.mp4" type="video/mp4">
-    </video>
-
-    <!-- 動画が無い場合の仮表示 -->
+    <!-- 初期状態：必ず画像 -->
     <img src="bg_admin_core.png" alt="admin core">
 
   </div>
 </div>
 
+<script>
+const videoSrc = 'bg_admin_core.mp4';
+
+fetch(videoSrc, { method: 'HEAD' })
+  .then(res => {
+    if (res.ok) {
+      const frame = document.getElementById('media-frame');
+      frame.innerHTML = `
+        <video autoplay loop muted playsinline>
+          <source src="${videoSrc}" type="video/mp4">
+        </video>
+      `;
+    }
+  })
+  .catch(() => {
+    // 何もしない（画像のまま）
+  });
+</script>
+
 </body>
 </html>
+
