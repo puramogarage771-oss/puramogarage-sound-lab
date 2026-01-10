@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ADMIN CORE</title>
+<title>管理コア</title>
 
 <style>
 html, body {
@@ -11,61 +11,78 @@ html, body {
   height: 100%;
   background: #000;
   overflow: hidden;
+  font-family: monospace;
 }
 
-/* ===== 世界全体 ===== */
+/* ====== 世界 ====== */
 .world {
   position: fixed;
   inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden;
 }
 
-/* ===== 背景（左右を埋める） ===== */
-.bg-blur {
+/* ====== 背景（世界そのもの） ====== */
+.bg-world {
   position: absolute;
-  inset: 0;
-  background-image: url("./bg_admin_core.png");
-  background-size: cover;
-  background-position: center;
-  filter: blur(40px) brightness(0.6);
+  inset: -10%;
+  background: url("./bg_admin_core.png") center / cover no-repeat;
+  filter: blur(35px) brightness(0.55);
   transform: scale(1.1);
   z-index: 0;
 }
 
-/* ===== 中央の本体（女の子） ===== */
-.bg-main {
-  position: relative;
-  height: 80vh;
-  aspect-ratio: 9 / 16;
-  background-image: url("./bg_admin_core.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+/* ====== 空間の奥行き（粒子） ====== */
+.depth {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center, rgba(0,255,255,0.12), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.85));
   z-index: 1;
 }
 
-/* ===== ロゴ ===== */
+/* ====== 管理人が立っている空間 ====== */
+.core-space {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+/* ====== 管理人（世界の中心） ====== */
+.core {
+  height: 92vh;
+  aspect-ratio: 9 / 16;
+  background: url("./bg_admin_core.png") center / contain no-repeat;
+  filter: drop-shadow(0 0 80px rgba(0,255,255,0.35));
+}
+
+/* ====== ロゴ ====== */
 .logo {
   position: absolute;
-  bottom: 12%;
+  bottom: 6%;
   left: 50%;
   transform: translateX(-50%);
   color: #00ffff;
-  font-family: monospace;
-  letter-spacing: 0.2em;
-  z-index: 2;
+  letter-spacing: 0.25em;
+  font-size: 14px;
+  z-index: 3;
 }
 </style>
-
 </head>
 
 <body>
-  <div class="world">
-    <div class="bg-blur"></div>
-    <div class="bg-main"></div>
-    <div class="logo">ADMIN CORE</div>
+<div class="world">
+  <div class="bg-world"></div>
+  <div class="depth"></div>
+
+  <div class="core-space">
+    <div class="core"></div>
   </div>
+
+  <div class="logo">管理コア</div>
+</div>
 </body>
 </html>
