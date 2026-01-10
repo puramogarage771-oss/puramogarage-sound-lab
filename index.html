@@ -10,19 +10,17 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   background: black;
+  overflow: hidden;
 }
 
-/* ===== 背景（全面）===== */
+/* ===== 背景（影なし）===== */
 .bg-full {
   position: fixed;
   inset: 0;
   background-image: url("bg_admin_core.png");
   background-size: cover;
   background-position: center;
-  filter: blur(40px) brightness(0.4);
-  transform: scale(1.15);
 }
 
 /* ===== 中央ステージ ===== */
@@ -34,10 +32,10 @@ html, body {
   align-items: center;
 }
 
-/* ===== 中央画像 ===== */
+/* ===== 中央9:16 ===== */
 .bg-main {
-  aspect-ratio: 9 / 16;
   height: 90vh;
+  aspect-ratio: 9 / 16;
   background-image: url("bg_admin_core.png");
   background-size: contain;
   background-repeat: no-repeat;
