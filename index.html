@@ -10,52 +10,49 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
   background: #000;
+  overflow: hidden;
 }
 
-/* ===== 世界全体 ===== */
 .world {
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
-/* ===== 背景（同じ動画を空間化） ===== */
-.bg-video {
+/* 背景（動画 or PNG） */
+.bg {
   position: absolute;
   inset: -20%;
   z-index: 0;
 }
 
-.bg-video video {
+.bg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(40px) brightness(0.5) saturate(1.2);
+  filter: blur(40px) brightness(0.45);
   transform: scale(1.2);
 }
 
-/* ===== 中央の本体（9:16） ===== */
+/* 中央本体 */
 .main {
   position: relative;
   height: 85vh;
   aspect-ratio: 9 / 16;
   z-index: 1;
-  box-shadow:
-    0 0 60px rgba(0,255,255,0.25),
-    0 0 120px rgba(0,255,255,0.15);
+  box-shadow: 0 0 80px rgba(0,255,255,0.25);
 }
 
 .main video {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  background: #000;
 }
 
-/* ===== ロゴ ===== */
 .logo {
   position: absolute;
   bottom: 4%;
@@ -63,10 +60,10 @@ html, body {
   transform: translateX(-50%);
   color: #00ffff;
   font-family: monospace;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.3em;
   font-size: 14px;
-  z-index: 2;
   opacity: 0.85;
+  z-index: 2;
 }
 </style>
 </head>
@@ -75,20 +72,19 @@ html, body {
 <div class="world">
 
   <!-- 背景 -->
-  <div class="bg-video">
-    <video autoplay muted loop playsinline>
+  <div class="bg">
+    <video autoplay muted loop playsinline poster="bg_admin_core.png">
       <source src="admin_core.mp4" type="video/mp4">
     </video>
   </div>
 
   <!-- 中央 -->
   <div class="main">
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline poster="bg_admin_core.png">
       <source src="admin_core.mp4" type="video/mp4">
     </video>
   </div>
 
-  <!-- ロゴ -->
   <div class="logo">管理コア</div>
 
 </div>
