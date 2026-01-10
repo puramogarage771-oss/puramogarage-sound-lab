@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ADMIN CORE</title>
 
 <style>
@@ -13,82 +13,35 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: #000;
-  font-family: system-ui, sans-serif;
 }
 
-/* ===== 世界 ===== */
-.world {
-  position: fixed;
-  inset: 0;
-}
-
-/* ===== 背景レイヤ ===== */
 .bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-image: url("bg_admin_core.png");
   background-repeat: no-repeat;
-  background-position: center 20%;
-  background-size: 100% auto;
+  background-position: center top;
+  background-size: auto 100%;
+  z-index: 0;
 }
 
-/* 奥（空気） */
-.bg.far {
-  filter: blur(40px) brightness(0.6);
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-/* 中（情報） */
-.bg.mid {
-  opacity: 0.25;
-  mix-blend-mode: screen;
-}
-
-/* 手前（揺らぎ） */
-.bg.near {
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      rgba(120,160,255,0.05),
-      rgba(120,160,255,0.05) 1px,
-      transparent 1px,
-      transparent 4px
-    ),
-    url("bg_admin_core.png");
-  animation: drift 90s linear infinite;
-}
-
-/* ===== 中央テキスト ===== */
 .center-text {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4ff;
-  letter-spacing: 0.25em;
-  font-size: clamp(12px, 2vw, 18px);
-  text-shadow: 0 0 12px rgba(0,255,255,0.4);
-}
-
-/* ===== アニメ ===== */
-@keyframes drift {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-10%); }
+  z-index: 1;
+  color: #00ffff;
+  font-family: "Arial", sans-serif;
+  letter-spacing: 0.2em;
+  font-size: 14px;
 }
 </style>
 </head>
 
 <body>
-  <div class="world">
-    <div class="bg far"></div>
-    <div class="bg mid"></div>
-    <div class="bg near"></div>
-
-    <div class="center-text">
-      ADMIN&nbsp;CORE
-    </div>
-  </div>
+  <div class="bg"></div>
+  <div class="center-text">ADMIN CORE</div>
 </body>
 </html>
