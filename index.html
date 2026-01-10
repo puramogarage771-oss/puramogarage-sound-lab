@@ -1,70 +1,53 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADMIN CORE</title>
-
-<style>
-/* ===== 基本リセット ===== */
 html, body {
   margin: 0;
   padding: 0;
-  width: 100%;
   height: 100%;
   background: #000;
   overflow: hidden;
 }
 
-/* ===== 背景レイヤー ===== */
-.bg-admin {
-  position: fixed;
-  inset: 0;
-  background-image: url("./bg_admin_core.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain; /* ← ここが重要（画像がデカくならない） */
-  z-index: 0;
-}
-
-/* ===== ノイズ・走査線 ===== */
-.noise {
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255,255,255,0.02),
-    rgba(255,255,255,0.02) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  opacity: 0.3;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ===== 中央テキスト ===== */
-.core-text {
+/* ===== 世界全体 ===== */
+.world {
   position: fixed;
   inset: 0;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-family: "Arial", sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.3em;
+  align-items: center;
+}
+
+/* ===== 背景（左右を埋める） ===== */
+.bg-blur {
+  position: absolute;
+  inset: 0;
+  background-image: url("./bg_admin_core.png");
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) brightness(0.6);
+  transform: scale(1.1);
+  z-index: 0;
+}
+
+/* ===== 中央の本体 ===== */
+.bg-main {
+  position: relative;
+  width: auto;
+  height: 80vh;        /* ← 女の子のサイズ支配 */
+  aspect-ratio: 9 / 16;
+  background-image: url("./bg_admin_core.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 1;
+}
+
+/* ===== ロゴ ===== */
+.logo {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
   color: #00ffff;
-  text-shadow: 0 0 8px rgba(0,255,255,0.6);
+  font-family: monospace;
+  letter-spacing: 0.2em;
   z-index: 2;
 }
-</style>
-</head>
-
-<body>
-
-  <div class="bg-admin"></div>
-  <div class="noise"></div>
-  <div class="core-text">ADMIN CORE</div>
-
-</body>
-</html>
