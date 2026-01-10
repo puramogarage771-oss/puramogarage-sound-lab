@@ -1,83 +1,27 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-<title>ADMIN CORE</title>
-
-<style>
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: #05070d;
-  overflow: hidden;
-}
-
-/* ===== ベース ===== */
-.stage {
-  position: fixed;
-  inset: 0;
-}
-
-/* ===== 中央（画像 or 動画） ===== */
-.core {
-  position: absolute;
-  inset: 0;
-  background-image: url("bg_admin_core.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  z-index: 2;
-}
-
-/* 動画用（差し替え時） */
-/*
-.core video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-*/
-
-/* ===== 左右グリッド ===== */
-.grid {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* 左 */
-.grid.left {
-  left: 0;
-  background:
-    linear-gradient(rgba(0,255,255,0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.35) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(to right, rgba(0,0,0,0.9) 0%, transparent 100%);
-}
-
-/* 右 */
-.grid.right {
-  right: 0;
-  background:
-    linear-gradient(rgba(0,255,255,0.35) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.35) 1px, transparent 1px);
-  background-size: 32px 32px;
-  mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 0%, transparent 100%);
-}
-/
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <title>ADMIN CORE</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="stage">
-    <div class="grid left"></div>
-    <div class="grid right"></div>
-    <div class="core"></div>
+
+<div class="world">
+  <div class="side-grid left"></div>
+  <div class="side-grid right"></div>
+
+  <div class="center">
+    <div class="core-glow"></div>
+
+    <!-- ★ ここが動画（差し替え済み） -->
+    <video class="media" autoplay loop muted playsinline>
+      <source src="bg_admin_core.mp4" type="video/mp4">
+    </video>
+
   </div>
+</div>
+
 </body>
 </html>
