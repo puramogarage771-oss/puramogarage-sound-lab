@@ -10,10 +10,22 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: black;
   overflow: hidden;
+  background: black;
 }
 
+/* ===== 背景（全面）===== */
+.bg-full {
+  position: fixed;
+  inset: 0;
+  background-image: url("bg_admin_core.png");
+  background-size: cover;
+  background-position: center;
+  filter: blur(40px) brightness(0.4);
+  transform: scale(1.15);
+}
+
+/* ===== 中央ステージ ===== */
 .stage {
   position: fixed;
   inset: 0;
@@ -22,51 +34,25 @@ html, body {
   align-items: center;
 }
 
-.frame {
+/* ===== 中央画像 ===== */
+.bg-main {
   aspect-ratio: 9 / 16;
   height: 90vh;
-  background: black;
-}
-
-.frame img,
-.frame video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
+  background-image: url("bg_admin_core.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 </style>
 </head>
 
 <body>
 
+<div class="bg-full"></div>
+
 <div class="stage">
-  <div class="frame" id="media-frame">
-
-    <!-- 初期状態：必ず画像 -->
-    <img src="bg_admin_core.png" alt="admin core">
-
-  </div>
+  <div class="bg-main"></div>
 </div>
-
-<script>
-const videoSrc = 'bg_admin_core.mp4';
-
-fetch(videoSrc, { method: 'HEAD' })
-  .then(res => {
-    if (res.ok) {
-      const frame = document.getElementById('media-frame');
-      frame.innerHTML = `
-        <video autoplay loop muted playsinline>
-          <source src="${videoSrc}" type="video/mp4">
-        </video>
-      `;
-    }
-  })
-  .catch(() => {
-    // 何もしない（画像のまま）
-  });
-</script>
 
 </body>
 </html>
