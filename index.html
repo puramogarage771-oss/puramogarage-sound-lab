@@ -1,207 +1,106 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PURAMO GARAGE — DEPTH NODE</title>
-  <style>
-    :root{
-      --bg:#05080d;
-      --c1:#00ffcc;
-      --c2:#00b7ff;
-    }
-    html,body{height:100%; margin:0; background:var(--bg); overflow:hidden; font-family:ui-monospace, Menlo, Consolas, monospace;}
-    /* 3D空間 */
-    .scene{
-      position:relative;
-      width:100vw; height:100vh;
-      perspective: 900px;
-      perspective-origin: 50% 45%;
-      overflow:hidden;
-    }
-    .world{
-      position:absolute; inset:-10vh -10vw;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-    /* レイヤー（奥行き） */
-    .layer{
-      position:absolute; inset:0;
-      transform-style: preserve-3d;
-      pointer-events:none;
-    }
-    .layer::before{
-      content:"";
-      position:absolute; inset:-20%;
-      background-size: cover;
-      background-position: center;
-      opacity: var(--op, .6);
-      filter: blur(var(--blur, 0px));
-      transform: translateZ(var(--z, -200px)) scale(var(--s, 1.2));
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>起動確認</title>
 
-    /* 背景（星雲っぽいノイズ） */
-    .l0::before{
-      --z:-800px; --s:2.0; --op:.55; --blur:1px;
-      background:
-        radial-gradient(1200px 800px at 20% 30%, rgba(0,183,255,.20), transparent 60%),
-        radial-gradient(900px 600px at 80% 20%, rgba(0,255,204,.18), transparent 55%),
-        radial-gradient(900px 700px at 60% 80%, rgba(255,255,255,.06), transparent 60%),
-        linear-gradient(180deg, #02040a, #05080d 55%, #02040a);
-    }
-    /* データ雨（疑似） */
-    .l1::before{
-      --z:-520px; --s:1.7; --op:.35; --blur:0px;
-      background:
-        repeating-linear-gradient(90deg,
-          rgba(0,255,204,.08) 0 1px,
-          transparent 1px 20px),
-        repeating-linear-gradient(180deg,
-          rgba(0,183,255,.08) 0 1px,
-          transparent 1px 18px);
-      mix-blend-mode: screen;
-    }
-    /* 斜めのグリッド */
-    .l2::before{
-      --z:-260px; --s:1.35; --op:.28; --blur:0px;
-      background:
-        repeating-linear-gradient(135deg,
-          rgba(0,255,204,.16) 0 1px,
-          transparent 1px 26px);
-      transform: translateZ(var(--z)) scale(var(--s)) rotateZ(-2deg);
-    }
+<style>
+:root {
+  --bg-dark: #020404;
+  --bg-light: #0a141f;
+  --neon: #00ffcc;
+}
 
-    /* フロントUI（クリック可） */
-    .ui{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      pointer-events:auto;
-    }
-    .card{
-      width:min(720px, 92vw);
-      border:1px solid rgba(0,255,204,.35);
-      background: rgba(0,0,0,.35);
-      box-shadow: 0 0 50px rgba(0,183,255,.12);
-      border-radius: 18px;
-      padding: 24px 22px;
-      backdrop-filter: blur(8px);
-    }
-    .title{
-      font-size: clamp(20px, 3vw, 34px);
-      letter-spacing: .08em;
-      color: var(--c1);
-      margin: 0 0 10px;
-    }
-    .sub{color: rgba(255,255,255,.75); margin: 0 0 18px; line-height:1.6;}
-    .row{display:flex; gap:10px; flex-wrap:wrap;}
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:10px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      border:1px solid rgba(0,183,255,.35);
-      color: rgba(255,255,255,.92);
-      background: rgba(0,0,0,.25);
-      text-decoration:none;
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-    }
-    .btn:hover{transform: translateY(-2px); border-color: rgba(0,255,204,.6); box-shadow:0 0 22px rgba(0,255,204,.16);}
-    .hint{
-      margin-top:14px;
-      font-size: 12px;
-      color: rgba(255,255,255,.55);
-    }
+/* ===== 基本 ===== */
+body {
+  margin: 0;
+  height: 100svh;
+  background: var(--bg-dark);
+  color: var(--neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  overflow: hidden;
+  filter: brightness(0.65);
+  transition: background 1.2s ease, filter 1.2s ease;
+}
 
-    /* 小さなノイズ */
-    .noise{
-      position:absolute; inset:0;
-      pointer-events:none;
-      opacity:.08;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-    }
-  </style>
+body.room-light {
+  background: var(--bg-light);
+  filter: brightness(1);
+}
+
+/* ===== 中央固定 ===== */
+#gate {
+  text-align: center;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* ===== テキスト ===== */
+.title {
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  letter-spacing: 0.2em;
+}
+
+/* ===== アニメ ===== */
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.waiting {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.loading {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+</style>
 </head>
+
 <body>
-  <div class="scene" id="scene">
-    <div class="world" id="world">
-      <div class="layer l0"></div>
-      <div class="layer l1"></div>
-      <div class="layer l2"></div>
-    </div>
 
-    <div class="ui">
-      <div class="card">
-        <h1 class="title">PURAMO GARAGE — WORLD ENTRY</h1>
-        <p class="sub">
-          ここはデータノード。<br>
-          マウスを動かすと空間が“生きる”。スマホは端末傾けでもOK（対応端末）。
-        </p>
-        <div class="row">
-          <a class="btn" href="./zone1.html">ENTER ZONE 01</a>
-          <a class="btn" href="./download.html">DOWNLOAD NODE</a>
-          <a class="btn" href="./about.html">SYSTEM LOG</a>
-        </div>
-        <div class="hint">Tip: マウス移動 / スクロールで奥行き演出。GitHub Pagesでそのまま動く。</div>
-      </div>
-    </div>
+<!-- ===== 中央表示（最初から両方用意） ===== -->
+<div id="gate" class="waiting">
+  <div class="title" id="access">アクセスノード</div>
+  <div class="title" id="loading" style="display:none;">起動中…</div>
+</div>
 
-    <div class="noise"></div>
-  </div>
+<script>
+const gate    = document.getElementById("gate");
+const access = document.getElementById("access");
+const load   = document.getElementById("loading");
 
-  <script>
-    const world = document.getElementById("world");
-    const scene = document.getElementById("scene");
+let started = false;
 
-    let targetX = 0, targetY = 0;
-    let curX = 0, curY = 0;
+gate.addEventListener("click", () => {
+  if (started) return;
+  started = true;
 
-    function onMove(nx, ny){
-      // nx,ny: -1..1
-      targetX = nx;
-      targetY = ny;
-    }
+  // 背景
+  document.body.classList.add("room-light");
 
-    // マウス
-    window.addEventListener("mousemove", (e) => {
-      const r = scene.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-      onMove(nx, ny);
-    }, {passive:true});
+  // 表示切り替え（DOMは消さない）
+  access.style.display = "none";
+  load.style.display   = "block";
 
-    // スクロール（微量：奥行き感）
-    window.addEventListener("wheel", (e)=>{
-      const dy = Math.max(-40, Math.min(40, e.deltaY));
-      targetY += dy / 800;
-      targetY = Math.max(-1, Math.min(1, targetY));
-    }, {passive:true});
+  // アニメ切替
+  gate.classList.remove("waiting");
+  gate.classList.add("loading");
 
-    // スマホ傾き（許可が必要なiOSあり）
-    window.addEventListener("deviceorientation", (e)=>{
-      if (e.beta == null || e.gamma == null) return;
-      const nx = Math.max(-1, Math.min(1, e.gamma / 35));
-      const ny = Math.max(-1, Math.min(1, e.beta  / 45));
-      onMove(nx, ny);
-    }, {passive:true});
+  // 音声（1回）
+  const voice = new SpeechSynthesisUtterance("ダウンロードシステム、起動！");
+  voice.lang = "ja-JP";
+  voice.rate = 0.9;
+  voice.pitch = 1.15;
+  voice.volume = 0.7;
+  speechSynthesis.speak(voice);
+});
+</script>
 
-    function tick(){
-      // 追従を滑らかに
-      curX += (targetX - curX) * 0.06;
-      curY += (targetY - curY) * 0.06;
-
-      // world全体を回転＋移動（奥行き）
-      const rotY = curX * 8;    // 左右回転
-      const rotX = -curY * 6;   // 上下回転
-      const tx = curX * 18;
-      const ty = curY * 14;
-
-      world.style.transform =
-        `translate3d(${tx}px, ${ty}px, 0px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-
-      requestAnimationFrame(tick);
-    }
-    tick();
-  </script>
 </body>
 </html>
