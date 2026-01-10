@@ -48,28 +48,28 @@ html, body {
   width: 50%;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.35;
 }
 
 /* 左 */
 .grid.left {
   left: 0;
   background:
-    linear-gradient(#0ff1 1px, transparent 1px),
-    linear-gradient(90deg, #0ff1 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: linear-gradient(to right, #000 0%, transparent 100%);
+    linear-gradient(rgba(0,255,255,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to right, rgba(0,0,0,0.9) 0%, transparent 100%);
 }
 
 /* 右 */
 .grid.right {
   right: 0;
   background:
-    linear-gradient(#0ff1 1px, transparent 1px),
-    linear-gradient(90deg, #0ff1 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: linear-gradient(to left, #000 0%, transparent 100%);
+    linear-gradient(rgba(0,255,255,0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 0%, transparent 100%);
 }
+/
 </style>
 </head>
 
