@@ -10,46 +10,74 @@ html, body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background: #05070d; /* 画像の平均色に近い */
+  background: #05070d;
   overflow: hidden;
 }
 
-/* ===== 背景（1回だけ） ===== */
-.bg {
+/* ===== ベース ===== */
+.stage {
   position: fixed;
   inset: 0;
-  background-image: url("bg_admin_core.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
-/* ===== 黒帯ではなく色で埋める ===== */
-.bg::before {
-  content: "";
+/* ===== 中央（画像 or 動画） ===== */
+.core {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at center,
-    transparent 35%,
-    rgba(5,7,13,0.95) 65%
-  );
+  background-image: url("bg_admin_core.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  z-index: 2;
 }
 
-/* ===== ここが動画に変わる ===== */
-video.bg {
+/* 動画用（差し替え時） */
+/*
+.core video {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+}
+*/
+
+/* ===== 左右グリッド ===== */
+.grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* 左 */
+.grid.left {
+  left: 0;
+  background:
+    linear-gradient(#0ff1 1px, transparent 1px),
+    linear-gradient(90deg, #0ff1 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to right, #000 0%, transparent 100%);
+}
+
+/* 右 */
+.grid.right {
+  right: 0;
+  background:
+    linear-gradient(#0ff1 1px, transparent 1px),
+    linear-gradient(90deg, #0ff1 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(to left, #000 0%, transparent 100%);
 }
 </style>
 </head>
 
 <body>
-  <!-- 画像版 -->
-  <div class="bg"></div>
-
-  <!-- 動画版にする時はこれに差し替え -->
-  <!--
-  <video class="bg" autoplay muted loop playsinline src="bg_admin_core.mp4"></video>
-  -->
+  <div class="stage">
+    <div class="grid left"></div>
+    <div class="grid right"></div>
+    <div class="core"></div>
+  </div>
 </body>
 </html>
