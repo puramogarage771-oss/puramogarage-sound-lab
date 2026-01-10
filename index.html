@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ADMIN CORE</title>
+
+<style>
 html, body {
   margin: 0;
   padding: 0;
@@ -27,11 +34,10 @@ html, body {
   z-index: 0;
 }
 
-/* ===== 中央の本体 ===== */
+/* ===== 中央の本体（女の子） ===== */
 .bg-main {
   position: relative;
-  width: auto;
-  height: 80vh;        /* ← 女の子のサイズ支配 */
+  height: 80vh;
   aspect-ratio: 9 / 16;
   background-image: url("./bg_admin_core.png");
   background-size: contain;
@@ -51,3 +57,15 @@ html, body {
   letter-spacing: 0.2em;
   z-index: 2;
 }
+</style>
+
+</head>
+
+<body>
+  <div class="world">
+    <div class="bg-blur"></div>
+    <div class="bg-main"></div>
+    <div class="logo">ADMIN CORE</div>
+  </div>
+</body>
+</html>
