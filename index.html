@@ -10,96 +10,17 @@
 
 <div class="screen">
 
-  <!-- 背景ステージ（今は画像／将来ここが動画） -->
   <div class="stage">
     <img src="admin_bg_depth.png" alt="background">
-    <!--
-    将来はこれに差し替えるだけ
-    <video src="admin_bg.mp4" autoplay muted loop playsinline></video>
-    -->
   </div>
 
-  <!-- 暗転・集中用レイヤー（1枚だけ） -->
   <div class="overlay"></div>
 
-  <!-- 女の子（最前面） -->
   <div class="core">
     <img src="bg_admin_core.png" alt="ADMIN CORE">
   </div>
 
 </div>
-/* ===== リセット & 基本 ===== */
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background: black;
-  overflow: hidden; /* スクロール完全禁止 */
-}
-
-/* ===== 全体スクリーン ===== */
-.screen {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-
-/* ===== 背景ステージ（画像 / 動画 共通） ===== */
-.stage {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.stage img,
-.stage video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* ===== 暗転・集中レイヤー（影はここ1枚） ===== */
-.overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background: radial-gradient(
-    circle at center,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.65)
-  );
-}
-
-/* ===== 女の子（最前面） ===== */
-.core {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.core img {
-  height: 100vh;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-/* ===== スマホ微調整 ===== */
-@media (max-width: 768px) {
-  .core img {
-    height: 90vh;
-  }
-}
 
 </body>
 </html>
