@@ -1,55 +1,32 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-<title>ADMIN CORE</title>
-
-<style>
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  background: #05070d; /* 画像の平均色に近い */
-  overflow: hidden;
-}
-
-/* ===== 背景（1回だけ） ===== */
-.bg {
-  position: fixed;
-  inset: 0;
-  background-image: url("bg_admin_core.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-/* ===== 黒帯ではなく色で埋める ===== */
-.bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at center,
-    transparent 35%,
-    rgba(5,7,13,0.95) 65%
-  );
-}
-
-/* ===== ここが動画に変わる ===== */
-video.bg {
-  object-fit: contain;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADMIN CORE</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <!-- 画像版 -->
-  <div class="bg"></div>
 
-  <!-- 動画版にする時はこれに差し替え -->
-  <!--
-  <video class="bg" autoplay muted loop playsinline src="bg_admin_core.mp4"></video>
-  -->
+<div class="screen">
+
+  <!-- 背景ステージ（今は画像 / 後で video に差し替え） -->
+  <div class="stage">
+    <img src="admin_bg_depth.png" alt="background">
+    <!-- 将来ここを video にするだけ
+    <video src="assets/videos/admin_bg.mp4" autoplay muted loop playsinline></video>
+    -->
+  </div>
+
+  <!-- 集中用オーバーレイ -->
+  <div class="overlay"></div>
+
+  <!-- 女の子 -->
+  <div class="core">
+    <img src="bg_admin_core.png" alt="ADMIN CORE">
+  </div>
+
+</div>
+
 </body>
 </html>
